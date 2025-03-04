@@ -56,16 +56,12 @@ end
 
 get("/payment/results") do
 
-  user_apr = params.fetch("user_apr").to_f
-  @p_apr = format("%.4f%%", user_apr) 
-  @p_years = params.fetch("user_years").to_i
-  pv = params.fetch("user_pv").to_f
-  @p_principal = format("$%0.2f", pv).gsub(/(\d)(?=(\d{3})+(?!\d))/, '\1,')
-
-  r = user_apr / 100 / 12
-  n = @p_years * 12
-  p = (r * pv) / (1 - ((1 + r) ** (-n)))
-  @p_result = format("$%0.2f", p).gsub(/(\d)(?=(\d{3})+(?!\d))/, '\1,')
+  @the_apr = params.fetch("users_apr_number").to_f.to_fs(:percentage, {:prcision => 4})
+  @the_num_yrs = params.fetch("users_num_yrs_number").to_i*12
+  @principle = params.fetch("users_pri_number").to_f.to_fs(:currency)
+  @numerator = @the_apr.to_f * @principle.to_f
+  @denominator = 1 - (1 + @the_apr.to_f) ** (-@the_num_yrs)
+  @monthly_payment = @numerator/@denominator.to_fs(:currency)
   
   erb(:payment_results)
 end
