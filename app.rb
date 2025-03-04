@@ -50,3 +50,19 @@ get ("/random/results") do
 end
 
 # payment sec
+
+get("/payment/new") do
+  erb(:new_payment_calc)
+end
+
+get("/payment/results") do
+
+  @the_apr = params.fetch("users_apr_number").to_f.to_fs(:percentage, {:prcision => 4})
+  @the_num_yrs = params.fetch("users_num_yrs_number").to_i*12
+  @principle = params.fetch("users_pri_number").to_f.to_fs(:currency)
+  @numerator = @the_apr.to_f * @principle.to_f
+  @denominator = 1 - (1 + @the_apr.to_f) ** (-@the_num_yrs)
+  @monthly_payment = @numerator/@denominator.to_fs(:currency)
+
+  erb(:payment_results)
+end
