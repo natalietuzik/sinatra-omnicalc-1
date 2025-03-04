@@ -62,7 +62,7 @@ get("/payment/results") do
   @principal = params.fetch("users_pri_number").to_f
   @p_principal = format("$%0.2f", @principal).gsub(/(\d)(?=(\d{3})+(?!\d))/, '\1,')
 
-  @r = user_apr / 100 / 12
+  @r = @the_apr / 100 / 12
   @numerator = @the_num_yrs * 12
   @p = (@r * @p_principal) / (1 - ((1 + @r) ** (-@numerator)))
   @p_result = format("$%0.2f", @p).gsub(/(\d)(?=(\d{3})+(?!\d))/, '\1,')
